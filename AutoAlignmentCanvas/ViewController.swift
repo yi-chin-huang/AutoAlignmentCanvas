@@ -16,32 +16,38 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
     private var shapes: [UIView] = []
     
     private let addCircleButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: 30, y: 50, width: 80, height: 40))
-        button.backgroundColor = .lightGray
+        let button = UIButton(frame: CGRect(x: 25, y: 60, width: 100, height: 40))
         button.setTitle("Add Circle", for: .normal)
-        button.setTitleColor(.black, for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 12)
         button.addTarget(self, action: #selector(addCircle), for: .touchUpInside)
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.systemBlue.cgColor
+        button.layer.cornerRadius = 4
         return button
     }()
     
     private let addTriangleButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: 130, y: 50, width: 80, height: 40))
-        button.backgroundColor = .lightGray
+        let button = UIButton(frame: CGRect(x: 135, y: 60, width: 100, height: 40))
         button.setTitle("Add Triangle", for: .normal)
-        button.setTitleColor(.black, for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 12)
         button.addTarget(self, action: #selector(addTriangle), for: .touchUpInside)
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.systemBlue.cgColor
+        button.layer.cornerRadius = 4
         return button
     }()
     
     private let addRectangleButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: 230, y: 50, width: 100, height: 40))
-        button.backgroundColor = .lightGray
+        let button = UIButton(frame: CGRect(x: 245, y: 60, width: 100, height: 40))
         button.setTitle("Add Rectangle", for: .normal)
-        button.setTitleColor(.black, for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 12)
         button.addTarget(self, action: #selector(addRectangle), for: .touchUpInside)
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.systemBlue.cgColor
+        button.layer.cornerRadius = 4
         return button
     }()
     
@@ -155,7 +161,7 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
     }
     
     @objc func addCircle() {
-        let shape = createCircle(frame: CGRect(x: 30, y: 100, width: 75, height: 75),
+        let shape = createCircle(frame: CGRect(x: 35, y: 120, width: 75, height: 75),
                                  color: UIColor(hue: CGFloat(drand48()), saturation: 0.5, brightness: 0.8, alpha: 1))
         view.addSubview(shape)
         shapes.append(shape)
@@ -166,7 +172,7 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
     }
     
     @objc func addTriangle() {
-        let shape = createTriangle(frame: CGRect(x: 130, y: 100, width: 75, height: 75),
+        let shape = createTriangle(frame: CGRect(x: 145, y: 120, width: 75, height: 75),
                                  color: UIColor(hue: CGFloat(drand48()), saturation: 0.5, brightness: 0.8, alpha: 1))
         view.addSubview(shape)
         shapes.append(shape)
@@ -177,7 +183,7 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
     }
     
     @objc func addRectangle() {
-        let shape = createRectangle(frame: CGRect(x:230, y: 100, width: 75, height: 75),
+        let shape = createRectangle(frame: CGRect(x:255, y: 120, width: 75, height: 75),
                                  color: UIColor(hue: CGFloat(drand48()), saturation: 0.5, brightness: 0.8, alpha: 1))
         view.addSubview(shape)
         shapes.append(shape)
