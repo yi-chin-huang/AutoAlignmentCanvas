@@ -83,11 +83,11 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
                     continue
                 }
                 
-                if abs(aligningDirection.getPosition(from: aligningView) - alignedDirection.getPosition(from: alignedView)) <= autoAlignDistance {
+                if abs(aligningView.getPosition(of: aligningDirection) - alignedView.getPosition(of: alignedDirection)) <= autoAlignDistance {
                     showAuxilaryLine(aligningView: aligningView, alignedView: alignedView, aligningDirection: aligningDirection, alignedDirection: alignedDirection)
                     aligningView.center = CGPoint(
-                        x: aligningView.center.x + (aligningDirection.isVertical() ? 0 : alignedDirection.getPosition(from: alignedView) - aligningDirection.getPosition(from: aligningView)),
-                        y: aligningView.center.y + (aligningDirection.isVertical() ? alignedDirection.getPosition(from: alignedView) - aligningDirection.getPosition(from: aligningView) : 0)
+                        x: aligningView.center.x + (aligningDirection.isVertical() ? 0 : alignedView.getPosition(of: alignedDirection) - aligningView.getPosition(of: aligningDirection)),
+                        y: aligningView.center.y + (aligningDirection.isVertical() ? alignedView.getPosition(of: alignedDirection) - aligningView.getPosition(of: aligningDirection) : 0)
                     )
                 }
             }
@@ -99,13 +99,13 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
         if alignedDirection.isVertical() {
             frame = CGRect(
                 x: min(aligningView.left, alignedView.left),
-                y: alignedDirection.getPosition(from: alignedView),
+                y: alignedView.getPosition(of: alignedDirection),
                 width: max(abs(aligningView.left - alignedView.right), abs(aligningView.right - alignedView.left)),
                 height: 1.0
             )
         } else {
             frame = CGRect(
-                x: alignedDirection.getPosition(from: alignedView),
+                x: alignedView.getPosition(of: alignedDirection),
                 y: min(aligningView.top, alignedView.top),
                 width: 1.0,
                 height: max(abs(aligningView.top - alignedView.bottom), abs(aligningView.bottom - alignedView.top))
@@ -197,6 +197,19 @@ extension UIView {
     var left: CGFloat { return self.frame.origin.x }
     var right: CGFloat { return self.frame.origin.x + self.frame.size.width }
     var bottom: CGFloat { return self.frame.origin.y + self.frame.size.height }
+    
+    func getPosition(of direction: Direction) -> CGFloat {
+        switch direction {
+        case .top:
+            return top
+        case .left:
+            return left
+        case .right:
+            return right
+        case .bottom:
+            return bottom
+        }
+    }
 }
 
 enum Direction: CaseIterable {
@@ -204,19 +217,6 @@ enum Direction: CaseIterable {
     case left
     case right
     case bottom
-    
-    func getPosition(from view: UIView) -> CGFloat {
-        switch self {
-        case .top:
-            return view.top
-        case .left:
-            return view.left
-        case .right:
-            return view.right
-        case .bottom:
-            return view.bottom
-        }
-    }
     
     func isVertical() -> Bool {
         switch self {
