@@ -9,8 +9,6 @@ import UIKit
 
 class ViewController: UIViewController, UICollisionBehaviorDelegate {
 
-    var dynamicAnimator = UIDynamicAnimator()
-    var snapBheavior:UISnapBehavior?
     private let autoAlignDistance: CGFloat = 4
     private var auxilaryLines: [UIView] = []
     private var shapes: [UIView] = []
@@ -60,7 +58,7 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
         view.addSubview(addRectangleButton)
     }
     
-    @objc func detectPan(_ gesture: UIPanGestureRecognizer) {
+    @objc private func detectPan(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: view)
         guard let gestureView = gesture.view else {
           return
@@ -85,11 +83,11 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
                     continue
                 }
                 
-                if abs(aligningDirection.getFloat(from: aligningView) - alignedDirection.getFloat(from: alignedView)) <= autoAlignDistance {
+                if abs(aligningDirection.getPosition(from: aligningView) - alignedDirection.getPosition(from: alignedView)) <= autoAlignDistance {
                     showAuxilaryLine(aligningView: aligningView, alignedView: alignedView, aligningDirection: aligningDirection, alignedDirection: alignedDirection)
                     aligningView.center = CGPoint(
-                        x: aligningView.center.x + (aligningDirection.isVertical() ? 0 : alignedDirection.getFloat(from: alignedView) - aligningDirection.getFloat(from: aligningView)),
-                        y: aligningView.center.y + (aligningDirection.isVertical() ? alignedDirection.getFloat(from: alignedView) - aligningDirection.getFloat(from: aligningView) : 0)
+                        x: aligningView.center.x + (aligningDirection.isVertical() ? 0 : alignedDirection.getPosition(from: alignedView) - aligningDirection.getPosition(from: aligningView)),
+                        y: aligningView.center.y + (aligningDirection.isVertical() ? alignedDirection.getPosition(from: alignedView) - aligningDirection.getPosition(from: aligningView) : 0)
                     )
                 }
             }
@@ -98,16 +96,16 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
     
     private func showAuxilaryLine(aligningView: UIView, alignedView: UIView, aligningDirection: Direction, alignedDirection: Direction) {
         var frame: CGRect
-        if alignedDirection == .top || alignedDirection == .bottom {
+        if alignedDirection.isVertical() {
             frame = CGRect(
                 x: min(aligningView.left, alignedView.left),
-                y: alignedDirection.getFloat(from: alignedView),
+                y: alignedDirection.getPosition(from: alignedView),
                 width: max(abs(aligningView.left - alignedView.right), abs(aligningView.right - alignedView.left)),
                 height: 1.0
             )
         } else {
             frame = CGRect(
-                x: alignedDirection.getFloat(from: alignedView),
+                x: alignedDirection.getPosition(from: alignedView),
                 y: min(aligningView.top, alignedView.top),
                 width: 1.0,
                 height: max(abs(aligningView.top - alignedView.bottom), abs(aligningView.bottom - alignedView.top))
@@ -125,7 +123,7 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
     }
 
     // Create and add shapes
-    func createCircle(frame: CGRect, color: UIColor) -> UIView{
+    private func createCircle(frame: CGRect, color: UIColor) -> UIView{
         let view = UIView(frame: frame)
         view.backgroundColor = color
         view.layer.cornerRadius = frame.size.width/2
@@ -133,7 +131,7 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
         return view
     }
     
-    func createTriangle(frame: CGRect, color: UIColor) -> UIView{
+    private func createTriangle(frame: CGRect, color: UIColor) -> UIView{
         let view = UIView(frame: frame)
         let layerHeight = view.layer.frame.height
         let layerWidth = view.layer.frame.width
@@ -154,13 +152,13 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
         return view
     }
     
-    func createRectangle(frame: CGRect, color: UIColor) -> UIView{
+    private func createRectangle(frame: CGRect, color: UIColor) -> UIView{
         let view = UIView(frame: frame)
         view.backgroundColor = color
         return view
     }
     
-    @objc func addCircle() {
+    @objc private func addCircle() {
         let shape = createCircle(frame: CGRect(x: 35, y: 120, width: 75, height: 75),
                                  color: UIColor(hue: CGFloat(drand48()), saturation: 0.5, brightness: 0.8, alpha: 1))
         view.addSubview(shape)
@@ -171,7 +169,7 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
         shape.isUserInteractionEnabled = true
     }
     
-    @objc func addTriangle() {
+    @objc private func addTriangle() {
         let shape = createTriangle(frame: CGRect(x: 145, y: 120, width: 75, height: 75),
                                  color: UIColor(hue: CGFloat(drand48()), saturation: 0.5, brightness: 0.8, alpha: 1))
         view.addSubview(shape)
@@ -182,7 +180,7 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
         shape.isUserInteractionEnabled = true
     }
     
-    @objc func addRectangle() {
+    @objc private func addRectangle() {
         let shape = createRectangle(frame: CGRect(x:255, y: 120, width: 75, height: 75),
                                  color: UIColor(hue: CGFloat(drand48()), saturation: 0.5, brightness: 0.8, alpha: 1))
         view.addSubview(shape)
@@ -207,19 +205,25 @@ enum Direction: CaseIterable {
     case right
     case bottom
     
-    func getFloat(from view: UIView) -> CGFloat {
-        if self == .top {
+    func getPosition(from view: UIView) -> CGFloat {
+        switch self {
+        case .top:
             return view.top
-        } else if self == .left {
+        case .left:
             return view.left
-        } else if self == .right {
+        case .right:
             return view.right
-        } else {
+        case .bottom:
             return view.bottom
         }
     }
     
     func isVertical() -> Bool {
-        return self == .top || self == .bottom
+        switch self {
+        case .top, .bottom:
+            return true
+        case .left, .right:
+            return false
+        }
     }
 }
