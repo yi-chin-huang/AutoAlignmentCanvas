@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UICollisionBehaviorDelegate {
+class ViewController: UIViewController {
 
     private let autoAlignDistance: CGFloat = 4
     private var auxilaryLines: [UIView] = []
